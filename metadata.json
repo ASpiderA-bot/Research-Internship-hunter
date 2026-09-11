@@ -1,0 +1,6 @@
+{
+  "name": "ResearchMatch Lite",
+  "description": "AI-Powered Professor Discovery from Resume, aligning student skills and projects with faculty research",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
