@@ -15,7 +15,7 @@ By analyzing your resume, skills, and project portfolio, ResearchMatch Lite iden
 - **Instant Preload Option**: Includes a realistic reference student profile to test and explore the recommendation engine immediately.
 
 ### 2. 🏛️ Strict Target Institute Filtering
-- **Tier-Categorized Selection**: Target faculty across **Top Old IITs** (Bombay, Delhi, Madras, Kanpur, Kharagpur, Roorkee, Guwahati), **Newer IITs** (Ropar, Hyderabad, Gandhinagar, Indore, Bhilai, Palakkad, Tirupati, Mandi, Patna), **Top IIITs** (Hyderabad, Bangalore, Delhi, Allahabad, Sri City, Gwalior), and **Top NITs** (Trichy, Surathkal, Calicut, Warangal, Rourkela, SVNIT Surat).
+- **Tier-Categorized Selection**: Targets faculty across **Top Old IITs** (Bombay, Delhi, Madras, Kanpur, Kharagpur, Roorkee, Guwahati), **Newer IITs** (Ropar, Hyderabad, Gandhinagar, Indore, Bhilai, Palakkad, Tirupati, Mandi, Patna), **Top IIITs** (Hyderabad, Bangalore, Delhi, Allahabad, Sri City, Gwalior), and **Top NITs** (Trichy, Surathkal, Calicut, Warangal, Rourkela, SVNIT Surat).
 - **Exact Boundary Isolation**: Employs normalized boundary matching to eliminate false-positive collisions (strictly distinguishing IIT vs. IIIT, and SVNIT Surat vs. NIT Surathkal).
 - **Interactive Multi-View Tabs**: Switch seamlessly between all selected institutions or drill down into per-institute recommendations with live match counts.
 
