@@ -1,4 +1,4 @@
-import { ProfessorProfile } from '../types';
+import { ProfessorProfile } from '../../shared/types.ts';
 
 export const SEED_PROFESSORS: ProfessorProfile[] = [
   // --- NEWER IITs (Generation 2 & 3 - High Conversion Opportunity) ---
