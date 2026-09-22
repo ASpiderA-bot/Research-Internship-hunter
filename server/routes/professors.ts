@@ -2,7 +2,8 @@ import { Router, type Request, type Response, type NextFunction } from "express"
 import { AppError, normalizeError, errorResponse } from "../utils/errors.ts";
 import { discoverProfessorsFromWeb, mergeWithSeedProfessors, deduplicateProfessors } from "../services/professorDiscovery.ts";
 import { verifyProfessorBatch } from "../services/professorVerification.ts";
-import { rankMatches, fallbackRank } from "../services/matcher.ts";
+import { rankMatches, fallbackRank, localOverlapScore } from "../services/matcher.ts";
+import { CONFIG } from "../utils/config.ts";
 import type { SearchResponse, StudentProfile } from "../../shared/types.ts";
 
 const router = Router();
@@ -25,8 +26,16 @@ router.post("/", async (req: Request, res: Response, next: NextFunction) => {
     const merged = mergeWithSeedProfessors(scraped);
     const candidates = deduplicateProfessors(merged);
 
-    // Run secondary verification on all candidates.
-    const { verified, rejected } = await verifyProfessorBatch(candidates);
+    // Pre-rank locally and verify only the most promising candidates to stay within rate limits and time budgets.
+    const maxToVerify = CONFIG.MAX_RESULTS;
+    const preRanked = candidates
+      .map((c) => ({ prof: c, score: localOverlapScore(c, studentProfile as StudentProfile) }))
+      .sort((a, b) => b.score - a.score)
+      .slice(0, maxToVerify)
+      .map((x) => x.prof);
+
+    // Run secondary verification on shortlisted candidates.
+    const { verified, rejected } = await verifyProfessorBatch(preRanked);
 
     let results;
     try {
@@ -42,7 +51,7 @@ router.post("/", async (req: Request, res: Response, next: NextFunction) => {
       results,
       targetInstitutes: isTargeted ? targetInstitutes : [],
       rejectedCount: rejected.length,
-      verificationNotes: `Verified ${verified.length} of ${candidates.length} candidates; ${rejected.length} rejected due to low-confidence identity or domain mismatch.`,
+      verificationNotes: `Verified ${verified.length} of ${preRanked.length} shortlisted candidates; ${candidates.length - preRanked.length} lower-priority candidates skipped.`,
     };
 
     res.json(response);

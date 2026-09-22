@@ -141,7 +141,13 @@ export function mergeWithSeedProfessors(scraped: ProfessorProfile[]): ProfessorP
     const isDuplicate = all.some(
       (c) => normalizedName(c.name) === normalizedName(seed.name)
     );
-    if (!isDuplicate) all.push(seed);
+    if (!isDuplicate) {
+      all.push({
+        ...seed,
+        verificationConfidence: "High",
+        verificationSources: ["curated seed database"],
+      });
+    }
   }
 
   return all;

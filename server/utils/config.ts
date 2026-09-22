@@ -9,7 +9,7 @@ export const CONFIG = {
   LLM_PROVIDER: (process.env.LLM_PROVIDER || "gemini").toLowerCase(),
   GEMINI_API_KEY: cleanKey(process.env.GEMINI_API_KEY),
   GROQ_API_KEY: cleanKey(process.env.GROQ_API_KEY),
-  GROQ_MODEL: process.env.GROQ_MODEL || "llama-3.3-70b-versatile",
+  GROQ_MODEL: process.env.GROQ_MODEL || "openai/gpt-oss-120b",
 
   APP_URL: process.env.APP_URL || "http://localhost:3000",
   SEARCH_TIMEOUT_MS: Number(process.env.SEARCH_TIMEOUT_MS || 5000),

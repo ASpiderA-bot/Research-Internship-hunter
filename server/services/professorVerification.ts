@@ -137,22 +137,54 @@ ${pages.map((p, idx) => `--- SOURCE ${idx + 1} (URL: ${p.url} | TITLE: ${p.title
   };
 }
 
+function withTimeout<T>(promise: Promise<T>, ms: number, label: string): Promise<T> {
+  const timeout = new Promise<never>((_, reject) =>
+    setTimeout(() => reject(new Error(`${label} timed out after ${ms}ms`)), ms)
+  );
+  return Promise.race([promise, timeout]);
+}
+
+async function asyncPool<T, R>(concurrency: number, items: T[], fn: (item: T, index: number) => Promise<R>): Promise<R[]> {
+  const results: R[] = new Array(items.length);
+  let index = 0;
+
+  async function worker() {
+    while (index < items.length) {
+      const currentIndex = index++;
+      results[currentIndex] = await fn(items[currentIndex], currentIndex);
+    }
+  }
+
+  const workers = Array.from({ length: concurrency }, () => worker());
+  await Promise.all(workers);
+  return results;
+}
+
 export async function verifyProfessorBatch(
   candidates: ProfessorProfile[],
   onProgress?: (done: number, total: number) => void
 ): Promise<{ verified: ProfessorProfile[]; rejected: ProfessorProfile[] }> {
   const verified: ProfessorProfile[] = [];
   const rejected: ProfessorProfile[] = [];
+  let done = 0;
 
-  for (let i = 0; i < candidates.length; i++) {
-    const candidate = candidates[i];
+  await asyncPool(4, candidates, async (candidate) => {
+    // Skip secondary verification for curated seed entries that are already marked verified.
+    if (candidate.verificationConfidence === "High" && candidate.verificationSources?.includes("curated seed database")) {
+      verified.push(candidate);
+      done++;
+      onProgress?.(done, candidates.length);
+      return;
+    }
+
     try {
-      const result = await verifyProfessor(candidate);
-      onProgress?.(i + 1, candidates.length);
+      const result = await withTimeout(verifyProfessor(candidate), 30000, `Verification for ${candidate.name}`);
+      done++;
+      onProgress?.(done, candidates.length);
 
       if (!result.verified || result.confidence === "Low") {
         rejected.push(candidate);
-        continue;
+        return;
       }
 
       verified.push({
@@ -171,10 +203,12 @@ export async function verifyProfessorBatch(
         publications: result.publications.slice(0, 3),
       });
     } catch (err) {
-      console.error(`Verification failed for ${candidate.name}:`, err);
+      done++;
+      onProgress?.(done, candidates.length);
+      console.error(`[verify] failed for ${candidate.name}:`, err);
       rejected.push(candidate);
     }
-  }
+  });
 
   return { verified, rejected };
 }

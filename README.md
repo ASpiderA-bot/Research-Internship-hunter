@@ -129,7 +129,7 @@ npm start
 |---|---|---|
 | `LLM_PROVIDER` | `gemini` | `gemini` or `groq`. |
 | `GROQ_API_KEY` | — | Required when `LLM_PROVIDER=groq`. Free tier at console.groq.com. |
-| `GROQ_MODEL` | `llama-3.3-70b-versatile` | Model ID for Groq. |
+| `GROQ_MODEL` | `openai/gpt-oss-120b` | Model ID for Groq. Use a model available on your key that supports `response_format`. |
 | `GEMINI_API_KEY` | — | Required when `LLM_PROVIDER=gemini`; also required for PDF parsing with Groq. |
 | `APP_URL` | `http://localhost:3000` | Hosted app URL. |
 | `PORT` | `3000` | Server port. |

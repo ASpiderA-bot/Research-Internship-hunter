@@ -2,7 +2,7 @@ import type { MatchResult, ProfessorProfile, StudentProfile } from "../../shared
 import { generateJSON, Type } from "./llm/index.ts";
 import { matchInstitute, matchesAnyTarget } from "../../shared/utils/instituteMatcher.ts";
 
-function localOverlapScore(prof: ProfessorProfile, student: StudentProfile): number {
+export function localOverlapScore(prof: ProfessorProfile, student: StudentProfile): number {
   const studentTokens = [
     ...student.skills,
     ...student.domains,

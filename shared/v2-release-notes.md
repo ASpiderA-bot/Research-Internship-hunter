@@ -16,8 +16,13 @@
 
 - **Swappable LLM provider**
   - Default support for Gemini and Groq.
-  - Groq is recommended for higher free-tier rate limits (~30 RPM, 1K RPD) and faster inference.
+  - Groq is recommended for higher free-tier rate limits (~30 RPM, 1K RPD). Default model updated to `openai/gpt-oss-120b`.
   - PDF parsing still uses Gemini when Groq is the primary provider.
+
+- **Performance & verification tuning**
+  - Curated seed professors are trusted as pre-verified; secondary search only runs on web-discovered candidates.
+  - Verification uses a concurrency pool with 30-second timeouts so searches finish in ~30 seconds instead of minutes.
+  - Candidates are pre-ranked locally before verification to avoid burning API calls on low-relevance profiles.
 
 - **Layered backend architecture**
   - Routes → Services → Utilities separation.
